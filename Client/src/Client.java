@@ -1,11 +1,18 @@
 
+import Climyfile.MyFile;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.Socket;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Client {
 
@@ -16,13 +23,18 @@ public class Client {
     static BufferedReader reader;
     static String name;
     static String ip;
+    static String portt;
     static JTextField ip1;
     static JTextField ip2;
     static JTextField ip3;
     static JTextField ip4;
+    static JTextField port;
     static JFrame nameAndIpframe;
     static JTextField nameTextField;
+    static int fileId=0;
 
+
+    static ArrayList<MyFile> myFiles = new ArrayList<>();
     public static void main(String[] args) {
 
         nameAndIpframe = new JFrame("client part");
@@ -54,6 +66,7 @@ public class Client {
         ip2 = new JTextField(4);
         ip3 = new JTextField(4);
         ip4 = new JTextField(4);
+        port=new JTextField(4);
         nameAndIpPanel.add(ip1);
         nameAndIpPanel.add(new Label("."));
         nameAndIpPanel.add(ip2);
@@ -61,6 +74,11 @@ public class Client {
         nameAndIpPanel.add(ip3);
         nameAndIpPanel.add(new Label("."));
         nameAndIpPanel.add(ip4);
+        nameAndIpPanel.add(new JLabel("                                         "));
+        nameAndIpPanel.add(new JLabel("port    "));
+        nameAndIpPanel.add(new Label("."));
+        nameAndIpPanel.add(port);
+        nameAndIpPanel.add(new JLabel("                                         "));
         nameAndIpPanel.add(sendNameAndIp);
         nameAndIpframe.getContentPane().add(BorderLayout.CENTER, nameAndIpPanel);
         nameAndIpframe.setSize(400, 400);
@@ -72,6 +90,7 @@ public class Client {
 
     private static class sendNameAndIpButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
+
             boolean isIpTrue = false;
 
             try {
@@ -83,6 +102,8 @@ public class Client {
                     throw new Exception();
                 if (!isInteger(ip4.getText()))
                     throw new Exception();
+                if (!isInteger(port.getText()))
+                    throw new Exception();
                 if (nameTextField.getText().equals("")) {
                     nameTextField.setText("you've not set your name ");
                 } else {
@@ -90,13 +111,13 @@ public class Client {
                 }
 
             } catch (Exception e) {
-                System.err.println("Invalid IP Address");
+                System.err.println("Invalid IP Address/port");
                 JFrame error = new JFrame("Error");
                 JPanel ErrorPanel = new JPanel();
-                ErrorPanel.add(new Label("Invalid IP "));
+                ErrorPanel.add(new Label("Invalid IP / port"));
                 error.getContentPane().add(BorderLayout.NORTH, ErrorPanel);
                 error.setResizable(false);
-                error.setSize(70, 100);
+                error.setSize(170, 100);
                 error.setVisible(true);
                 error.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
@@ -104,18 +125,15 @@ public class Client {
             if (isIpTrue) {
                 name = nameTextField.getText();
                 ip = ip1.getText() + "." + ip2.getText() + "." + ip3.getText() + "." + ip4.getText();
+                portt=port.getText();
                 System.out.println(ip);
-                System.out.println("yeah");
+                System.out.println(portt);
                 try {
-                   Socket sock = new Socket(ip, 1234);
+                   Socket sock = new Socket(ip, Integer.parseInt(portt));
 
-                    //  reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-                    //writer = new PrintWriter(sock.getOutputStream());
                     System.out.println("Connection with the server Established");
                     nameAndIpframe.setVisible(false);
 
-
-                  //  private void go() {
 
 
                         // Accessed from within inner class needs to be final or effectively final.
@@ -124,7 +142,7 @@ public class Client {
                         // Set the frame to house everything.
                         JFrame jFrame = new JFrame("website Client part");
                         // Set the size of the frame.
-                        jFrame.setSize(450, 450);
+                        jFrame.setSize(550, 650);
                         // Make the layout to be box layout that places its children on top of each other.
                         jFrame.setLayout(new BoxLayout(jFrame.getContentPane(), BoxLayout.Y_AXIS));
                         // Make it so when the frame is closed the program exits successfully.
@@ -170,7 +188,27 @@ public class Client {
                         jpButtond.add(jbChooseFile);
 
                         // Button action for choosing the file.
-                        // This is an inner class so we need the fileToSend to be final.
+
+
+
+
+                    // Panel that will hold the title label and the other jpanels.
+                    JPanel jPanel = new JPanel();
+
+                    // Make the panel that contains everything to stack its child elements on top of eachother.
+                    jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
+
+                    // Make it scrollable when the data gets in jpanel.
+                    JScrollPane jScrollPane = new JScrollPane(jPanel);
+                    // Make it so there is always a vertical scrollbar.
+                    jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+
+
+
+
+
+                    // This is an inner class so we need the fileToSend to be final.
                         jbChooseFile.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
@@ -222,17 +260,320 @@ public class Client {
                                         dataOutputStream.writeInt(fileBytes.length);
                                         // Send the actual file.
                                         dataOutputStream.write(fileBytes);
+
+
+
+                                        JPanel jpFileRow = new JPanel();
+                                        jpFileRow.setLayout(new BoxLayout(jpFileRow, BoxLayout.X_AXIS));
+                                        // Set the file name.
+                                        JLabel jlFileName = new JLabel(fileName);
+                                        jlFileName.setFont(new Font("Arial", Font.BOLD, 20));
+                                        jlFileName.setBorder(new EmptyBorder(10,0, 10,0));
+
+
+                                        if (getFileExtension(fileName).equals("txt")) {
+                                            // Set the name to be the fileId so you can get the correct file from the panel.
+                                            jpFileRow.setName((String.valueOf(fileId)));
+                                            jpFileRow.addMouseListener(getMyMouseListener());
+                                            // Add everything.
+                                            jpFileRow.add(jlFileName);
+                                            jPanel.add(jpFileRow);
+                                            jFrame.validate();
+                                        } else {
+                                            // Set the name to be the fileId so you can get the correct file from the panel.
+                                            jpFileRow.setName((String.valueOf(fileId)));
+                                            // Add a mouse listener so when it is clicked the popup appears.
+                                            jpFileRow.addMouseListener(getMyMouseListener());
+                                            // Add the file name and pic type to the panel and then add panel to parent panel.
+                                            jpFileRow.add(jlFileName);
+                                            jPanel.add(jpFileRow);
+                                            // Perform a relayout.
+                                            jFrame.validate();
+                                        }
+
+                                        // Add the new file to the array list which holds all our data.
+                                        myFiles.add(new MyFile(fileId,fileName,fileBytes,getFileExtension(fileName)));
+                                        // Increment the fileId for the next file to be received.
+                                        fileId++;
+
+
+
                                     } catch (IOException ex) {
                                         ex.printStackTrace();
                                     }
                                 }
                             }
+
+                            private MouseListener getMyMouseListener() {
+                                return new MouseListener() {
+                                    @Override
+                                    public void mouseClicked(MouseEvent e) {
+                                        // Get the source of the click which is the JPanel.
+                                        JPanel jPanel = (JPanel) e.getSource();
+                                        // Get the ID of the file.
+                                        int fileId = Integer.parseInt(jPanel.getName());
+                                        // Loop through the file storage and see which file is the selected one.
+                                        for (MyFile myFile : myFiles) {
+                                            if (myFile.getId() == fileId) {
+                                                JFrame jfPreview = createFrame(myFile.getName(), myFile.getData(), myFile.getFileExtension());
+                                                jfPreview.setVisible(true);
+                                            }
+                                        }
+                                    }
+
+                                    private JFrame createFrame(String fileName, byte[] fileData, Object fileExtension) {
+                                     //   public static JFrame createFrame(String fileName, byte[] fileData, String fileExtension) {
+
+                                            // Frame to hold everything.
+                                            JFrame jFrame = new JFrame(" File Downloader/ delete");
+                                            // Set the size of the frame.
+                                            jFrame.setSize(500, 500);
+
+                                            // Panel to hold everything.
+                                            JPanel jPanel = new JPanel();
+                                            // Make the layout a box layout with child elements stacked on top of each other.
+                                            jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
+
+                                            // Title above panel.
+                                            JLabel jlTitle = new JLabel(" File Downloader");
+                                            // Center the label title horizontally.
+                                            jlTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+                                            // Change the font family, size, and style.
+                                            jlTitle.setFont(new Font("Arial", Font.BOLD, 20));
+                                            // Add spacing on the top and bottom of the element.
+                                            jlTitle.setBorder(new EmptyBorder(5,0,5,0));
+
+                                            // Label to prompt the user if they are sure they want to download the file.
+                                            JLabel jlPrompt = new JLabel("Are you sure you want to download " + fileName + "?");
+                                            // Change the font style, size, and family of the label.
+                                            jlPrompt.setFont(new Font("Arial", Font.BOLD, 15));
+                                            // Add spacing on the top and bottom of the label.
+                                            jlPrompt.setBorder(new EmptyBorder(5,0,5,0));
+                                            // Center the label horizontally.
+                                            jlPrompt.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                                            // Create the yes for accepting the download.
+                                            JButton jbYes = new JButton("Yes");
+                                            jbYes.setPreferredSize(new Dimension(80, 30));
+                                            // Set the font for the button.
+                                            jbYes.setFont(new Font("Arial", Font.BOLD, 10));
+
+                                            // No button for rejecting the download.
+                                            JButton jbNo = new JButton("No");
+                                            // Change the size of the button must be preferred because if not the layout will ignore it.
+                                            jbNo.setPreferredSize(new Dimension(70, 30));
+                                            // Set the font for the button.
+                                            jbNo.setFont(new Font("Arial", Font.BOLD, 10));
+
+
+                                            // Panel to hold the yes and no buttons and make the next to each other left and right.
+                                            JPanel jpButtons = new JPanel();
+                                            // Add spacing around the panel.
+                                            jpButtons.setBorder(new EmptyBorder(5, 0, 5, 0));
+                                            // Add the yes and no buttons.
+
+                                            jpButtons.add(jbYes);
+                                            jpButtons.add(jbNo);
+
+
+                                            // Label to hold the content of the file whether it be text of images.
+                                            JLabel jlFileContent = new JLabel();
+                                            // Align the label horizontally.
+                                            jlFileContent.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+                                            //for delete
+                                            // Label to prompt the user if they are sure they want to download the file.
+                                            JLabel jlPrompt1 = new JLabel("Are you sure you want to delete " + fileName + "?");
+                                            // Change the font style, size, and family of the label.
+                                            jlPrompt1.setFont(new Font("Arial", Font.BOLD, 15));
+                                            // Add spacing on the top and bottom of the label.
+                                            jlPrompt1.setBorder(new EmptyBorder(5,0,5,0));
+                                            // Center the label horizontally.
+                                            jlPrompt1.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                                            // Create the yes for accepting the download.
+                                            JButton jbYesd = new JButton("Yes");
+                                            jbYesd.setPreferredSize(new Dimension(80, 30));
+                                            // Set the font for the button.
+                                            jbYesd.setFont(new Font("Arial", Font.BOLD, 10));
+
+                                            // No button for rejecting the download.
+                                            JButton jbNod = new JButton("No");
+                                            // Change the size of the button must be preferred because if not the layout will ignore it.
+                                            jbNod.setPreferredSize(new Dimension(70, 30));
+                                            // Set the font for the button.
+                                            jbNod.setFont(new Font("Arial", Font.BOLD, 10));
+
+
+
+
+
+                                            // Panel to hold the yes and no buttons and make the next to each other left and right.
+                                            JPanel jpButtonsd = new JPanel();
+                                            // Add spacing around the panel.
+                                            jpButtonsd.setBorder(new EmptyBorder(5, 0, 5, 0));
+                                            // Add the yes and no buttons.
+
+                                            jpButtonsd.add(jbYesd);
+                                            jpButtonsd.add(jbNod);
+
+                                            // If the file is a text file then display the text.
+                                            if (fileExtension.equals("txt")) {
+                                                // Wrap it with <html> so that new lines are made.
+                                                jlFileContent.setText("<html>" + new String(fileData) + "</html>");
+                                                // If the file is not a text file then make it an image.
+                                            } else {
+                                                jlFileContent.setIcon(new ImageIcon(fileData));
+                                            }
+
+                                            // Yes so download file.
+                                            jbYes.addActionListener(new ActionListener() {
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                    // Create the file with its name.
+                                                    File fileToDownload = new File(fileName);
+                                                    try {
+                                                        // Create a stream to write data to the file.
+                                                        FileOutputStream fileOutputStream = new FileOutputStream(fileToDownload);
+                                                        // Write the actual file data to the file.
+                                                        fileOutputStream.write(fileData);
+                                                        // Close the stream.
+                                                        fileOutputStream.close();
+                                                        // Get rid of the jFrame. after the user clicked yes.
+                                                        jFrame.dispose();
+                                                    } catch (IOException ex) {
+                                                        ex.printStackTrace();
+                                                    }
+
+                                                }
+                                            });
+
+                                            // No so close window in download.
+                                            jbNo.addActionListener(new ActionListener() {
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                    // User clicked no so don't download the file but close the jframe.
+                                                    jFrame.dispose();
+                                                }
+                                            });
+
+
+
+
+
+                                            //yes for delete
+                                            jbYesd.addActionListener(new ActionListener() {
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                    // Create the file with its name.
+                                                    File fileToDelete = new File(fileName);
+                                                    if(fileToDelete.delete()) {
+                                                        // Label to prompt the user if they are sure they want to download the file.
+                                                        JLabel jlPrompt2 = new JLabel("Are you sure you want to download " + fileName + "?");
+                                                        // Change the font style, size, and family of the label.
+                                                        jlPrompt2.setFont(new Font("Arial", Font.BOLD, 15));
+                                                        // Add spacing on the top and bottom of the label.
+                                                        jlPrompt2.setBorder(new EmptyBorder(5,0,5,0));
+                                                        // Center the label horizontally.
+                                                        jlPrompt2.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                                                    } else {
+                                                        // Label to prompt the user if they are sure they want to download the file.
+                                                        JLabel jlPrompt3 = new JLabel("Are you sure you want to download " + fileName + "?");
+                                                        // Change the font style, size, and family of the label.
+                                                        jlPrompt3.setFont(new Font("Arial", Font.BOLD, 15));
+                                                        // Add spacing on the top and bottom of the label.
+                                                        jlPrompt3.setBorder(new EmptyBorder(5,0,5,0));
+                                                        // Center the label horizontally.
+                                                        jlPrompt3.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+
+                                                    }
+
+                                                }
+                                            });
+
+
+
+
+
+                                            // No so close window in delete.
+                                            jbNod.addActionListener(new ActionListener() {
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                    // User clicked no so don't download the file but close the jframe.
+                                                    jFrame.dispose();
+                                                }
+                                            });
+
+                                            // Add everything to the panel before adding to the frame.
+                                            jPanel.add(jlTitle);
+
+                                            jPanel.add(jlPrompt);
+                                            jPanel.add(jpButtons);
+
+                                            jPanel.add(jlFileContent);
+
+                                            jPanel.add(jlPrompt1);
+                                            jPanel.add(jpButtonsd);
+
+                                            // Add panel to the frame.
+                                            jFrame.add(jPanel);
+
+                                            // Return the jFrame so it can be passed the right data and then shown.
+                                            return jFrame;
+
+
+
+                                    }
+
+                                    @Override
+                                    public void mousePressed(MouseEvent e) {
+
+                                    }
+
+                                    @Override
+                                    public void mouseReleased(MouseEvent e) {
+
+                                    }
+
+                                    @Override
+                                    public void mouseEntered(MouseEvent e) {
+
+                                    }
+
+                                    @Override
+                                    public void mouseExited(MouseEvent e) {
+
+                                    }
+                                };
+                            }
+
+                            private Object getFileExtension(String fileName) {
+                                int i = fileName.lastIndexOf('.');
+                                // If there is an extension.
+                                if (i > 0) {
+                                    // Set the extension to the extension of the filename.
+                                    return fileName.substring(i + 1);
+                                } else {
+                                    return "No extension found.";
+                                }
+                            }
+
+
                         });
+
+
+
+
+
 
                         // Add everything to the frame and make it visible.
                         jFrame.add(jlTitle);
                         jFrame.add(jlFileName);
                         jFrame.add(jpButtond);
+                    jFrame.add(jScrollPane);
                         jFrame.setVisible(true);
 
                 } catch (IOException e) {
@@ -251,7 +592,6 @@ public class Client {
 
 
         }
-
 
 
         public boolean isInteger(String input) {
@@ -277,7 +617,7 @@ public class Client {
             }
             try {
                 int n = Integer.parseInt(input);
-                if (n >= 0 && n <= 255)
+                if ((n >= 0 && n <= 255)||n==1234)
                     return true;
 
                 else
@@ -288,6 +628,9 @@ public class Client {
         }
 
     }
+
+
+
 
 
 }

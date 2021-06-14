@@ -25,7 +25,7 @@ public class Server {
         // Main container, set the name.
         JFrame jFrame = new JFrame("website Server part");
         // Set the size of the frame.
-        jFrame.setSize(400, 400);
+        jFrame.setSize(500, 600);
         // Give the frame a box layout that stacks its children on top of each other.
         jFrame.setLayout(new BoxLayout(jFrame.getContentPane(), BoxLayout.Y_AXIS));
         // When closing the frame also close the program.
