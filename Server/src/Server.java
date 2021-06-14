@@ -70,6 +70,7 @@ public class Server {
 
                 // Stream to receive data from the client through the socket.
                 DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                System.out.println("connected");
 
                 // Read the size of the file name so know when to stop reading.
                 int fileNameLength = dataInputStream.readInt();
