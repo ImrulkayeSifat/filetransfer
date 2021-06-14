@@ -1,13 +1,11 @@
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
-
-//import static com.sun.tools.sjavac.Main.go;
 
 public class Client {
 
@@ -31,21 +29,31 @@ public class Client {
         nameAndIpframe.setResizable(false);
         JPanel nameAndIpPanel = new JPanel(new FlowLayout());
 
-        nameAndIpPanel.add(new JLabel("Your Name: "));
-        nameTextField = new JTextField(20);
+        nameAndIpPanel.add(new JLabel("                                                          "));
+        nameAndIpPanel.add(new JLabel("                                                           "));
+        nameAndIpPanel.add(new JLabel("                                   Enter Your Name " ,SwingConstants.CENTER));
+        nameAndIpPanel.add(new JLabel("                                                         "));
+
+        nameTextField = new JTextField(30);
         name = nameTextField.getText();
         nameAndIpPanel.add(nameTextField);
 
-        JButton sendNameAndIp = new JButton("connect NOW!");
+
+        nameAndIpPanel.add(new JLabel("                                                         "));
+        nameAndIpPanel.add(new JLabel("                                               "));
+        JButton sendNameAndIp = new JButton("connect now");
         sendNameAndIp.addActionListener(new sendNameAndIpButtonListener());
-        nameAndIpPanel.add(new JLabel("                                                     "));
-        nameAndIpPanel.add(new JLabel("                                     "));
-        nameAndIpPanel.add(new JLabel("Server's port number is 1234.\n Enter its valid Ip Address: "));
-        nameAndIpPanel.add(new JLabel("                    "));
-        ip1 = new JTextField(2);
-        ip2 = new JTextField(2);
-        ip3 = new JTextField(2);
-        ip4 = new JTextField(2);
+        nameAndIpPanel.add(new JLabel("<html><space>&emsp&emsp&emsp &emsp&emsp&emsp</space>Server's port number is 1234<br> <space>&emsp&emsp&emsp&emsp&emsp &emsp&emsp</space>Enter valid Ip Address:</html>", SwingConstants.CENTER ));
+        nameAndIpPanel.add(new JLabel("                                         "));
+        nameAndIpPanel.add(new JLabel(""));
+        nameAndIpPanel.add(new JLabel("                                                         "));
+        nameAndIpPanel.add(new JLabel("                                                        "));
+
+        nameAndIpPanel.add(new JLabel(""));
+        ip1 = new JTextField(4);
+        ip2 = new JTextField(4);
+        ip3 = new JTextField(4);
+        ip4 = new JTextField(4);
         nameAndIpPanel.add(ip1);
         nameAndIpPanel.add(new Label("."));
         nameAndIpPanel.add(ip2);
@@ -55,59 +63,12 @@ public class Client {
         nameAndIpPanel.add(ip4);
         nameAndIpPanel.add(sendNameAndIp);
         nameAndIpframe.getContentPane().add(BorderLayout.CENTER, nameAndIpPanel);
-        nameAndIpframe.setSize(400, 200);
+        nameAndIpframe.setSize(400, 400);
         nameAndIpframe.setVisible(true);
         nameAndIpframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
     }
-
-
- /*   private class SendButtonListener implements ActionListener
-    {
-        public void actionPerformed(ActionEvent ae)
-        {
-            try
-            {
-                String outmessage=name+": "+outgoing.getText();
-                writer.println(outmessage);
-                writer.flush();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            finally
-            {
-                outgoing.setText("");
-                outgoing.requestFocus();
-            }
-        }
-    }
-*/
-  /*  private class IncomingReader implements Runnable
-    {
-        String inmessage;
-
-        public void run()
-        {
-            try
-            {
-                while((inmessage=reader.readLine())!=null)
-                {
-
-                    System.out.println("Read: "+inmessage);
-                    incoming.append(inmessage+"\n");
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-    }
-*/
 
     private static class sendNameAndIpButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
@@ -274,26 +235,8 @@ public class Client {
                         jFrame.add(jpButtond);
                         jFrame.setVisible(true);
 
-                   // }
-
-
-
-
-
-
-
-                    // return true;
                 } catch (IOException e) {
                     e.printStackTrace();
-                   // return false;
-               /* }
-                if (setUpNetworking()) {
-                    System.out.println(" to go");
-
-
-                    nameAndIpframe.setVisible(false);
-                    go();
-                } else {*/
                     System.err.println("Server seems to be Unavailable. Make sure you typed in the IP address correctly");
                     JFrame error2 = new JFrame("Error");
                     JPanel ErrorPanel2 = new JPanel();
@@ -343,9 +286,6 @@ public class Client {
                 return false;
             }
         }
-
-
-      //  private boolean setUpNetworking() {        }
 
     }
 

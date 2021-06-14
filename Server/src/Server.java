@@ -9,7 +9,6 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Server {
@@ -147,12 +146,7 @@ public class Server {
         }
     }
 
-    /**
-     * When the jpanel is clicked a popup shows to say whether the user wants to download
-     * the selected document.
-     *
-     * @return A mouselistener that is used by the jpanel.
-     */
+
     public static MouseListener getMyMouseListener() {
         return new MouseListener() {
             @Override
