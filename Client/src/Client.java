@@ -105,19 +105,28 @@ public class Client {
                 if (!isInteger(port.getText()))
                     throw new Exception();
                 if (nameTextField.getText().equals("")) {
-                    nameTextField.setText("you've not set your name ");
+                   // nameTextField.setText("you've not set your name ");
+
+                    JFrame error = new JFrame("Error");
+                    JPanel ErrorPanel = new JPanel();
+                    ErrorPanel.add(new Label("you've not set your name "));
+                    error.getContentPane().add(BorderLayout.NORTH, ErrorPanel);
+                    error.setResizable(false);
+                    error.setSize(370, 200);
+                    error.setVisible(true);
+                    error.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 } else {
                     isIpTrue = true;
                 }
 
             } catch (Exception e) {
-                System.err.println("Invalid IP Address/port");
+                System.err.println("Invalid  port");
                 JFrame error = new JFrame("Error");
                 JPanel ErrorPanel = new JPanel();
-                ErrorPanel.add(new Label("Invalid IP / port"));
+                ErrorPanel.add(new Label("Invalid port"));
                 error.getContentPane().add(BorderLayout.NORTH, ErrorPanel);
                 error.setResizable(false);
-                error.setSize(170, 100);
+                error.setSize(370, 200);
                 error.setVisible(true);
                 error.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
@@ -138,7 +147,7 @@ public class Client {
 
                         // Accessed from within inner class needs to be final or effectively final.
                         final File[] fileToSend = new File[1];
-
+                   // final File[] fileTodown = new File[1];
                         // Set the frame to house everything.
                         JFrame jFrame = new JFrame("website Client part");
                         // Set the size of the frame.
@@ -215,11 +224,15 @@ public class Client {
                                 // Create a file chooser to open the dialog to choose a file.
                                 JFileChooser jFileChooser = new JFileChooser();
                                 // Set the title of the dialog.
+                                jFileChooser.setCurrentDirectory(new java.io.File("."));
+
                                 jFileChooser.setDialogTitle("Choose a file to send.");
                                 // Show the dialog and if a file is chosen from the file chooser execute the following statements.
                                 if (jFileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                                     // Get the selected file.
                                     fileToSend[0] = jFileChooser.getSelectedFile();
+                                    System.out.println("path file: " + fileToSend[0].getAbsolutePath());
+
                                     // Change the text of the java swing label to have the file name.
                                     jlFileName.setText("The file you want to send is: " + fileToSend[0].getName());
                                 }
@@ -265,10 +278,12 @@ public class Client {
 
                                         JPanel jpFileRow = new JPanel();
                                         jpFileRow.setLayout(new BoxLayout(jpFileRow, BoxLayout.X_AXIS));
+                                        jpFileRow.setVisible(true);
                                         // Set the file name.
                                         JLabel jlFileName = new JLabel(fileName);
                                         jlFileName.setFont(new Font("Arial", Font.BOLD, 20));
                                         jlFileName.setBorder(new EmptyBorder(10,0, 10,0));
+                                        jlFileName.setVisible(true);
 
 
                                         if (getFileExtension(fileName).equals("txt")) {
@@ -327,7 +342,7 @@ public class Client {
                                             // Frame to hold everything.
                                             JFrame jFrame = new JFrame(" File Downloader/ delete");
                                             // Set the size of the frame.
-                                            jFrame.setSize(500, 500);
+                                            jFrame.setSize(700, 700);
 
                                             // Panel to hold everything.
                                             JPanel jPanel = new JPanel();
@@ -369,7 +384,7 @@ public class Client {
                                             // Panel to hold the yes and no buttons and make the next to each other left and right.
                                             JPanel jpButtons = new JPanel();
                                             // Add spacing around the panel.
-                                            jpButtons.setBorder(new EmptyBorder(5, 0, 5, 0));
+                                          //  jpButtons.setBorder(new EmptyBorder(5, 0, 5, 0));
                                             // Add the yes and no buttons.
 
                                             jpButtons.add(jbYes);
@@ -412,7 +427,7 @@ public class Client {
                                             // Panel to hold the yes and no buttons and make the next to each other left and right.
                                             JPanel jpButtonsd = new JPanel();
                                             // Add spacing around the panel.
-                                            jpButtonsd.setBorder(new EmptyBorder(5, 0, 5, 0));
+                                        //    jpButtonsd.setBorder(new EmptyBorder(5, 0, 5, 0));
                                             // Add the yes and no buttons.
 
                                             jpButtonsd.add(jbYesd);
@@ -424,7 +439,13 @@ public class Client {
                                                 jlFileContent.setText("<html>" + new String(fileData) + "</html>");
                                                 // If the file is not a text file then make it an image.
                                             } else {
-                                                jlFileContent.setIcon(new ImageIcon(fileData));
+                                               jlFileContent.setIcon(new ImageIcon(fileData));
+                                                jlFileContent.setPreferredSize(new Dimension(470, 430));
+                                                //fileData.getScaledInstance(Image.SCALE_SMOOTH);
+                                               // Image resizedImage =
+                                                //        fileData.getScaledInstance(500,500,Image.SCALE_SMOOTH);
+                                              //  jlFileContent.setIcon(new ImageIcon(resizedImage));
+
                                             }
 
                                             // Yes so download file.
@@ -432,7 +453,24 @@ public class Client {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
                                                     // Create the file with its name.
-                                                    File fileToDownload = new File(fileName);
+
+
+                                                    final File[] fileTodown = new File[1];
+                                                    JFileChooser jFileChooser = new JFileChooser();
+                                                    // Get the selected file.
+                                                    jFileChooser.setCurrentDirectory(new java.io.File("."));
+                                                    jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                                                    if (jFileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                                                        //System.out.println("getCurrentDirectory(): " + jFileChooser.getCurrentDirectory());
+                                                        System.out.println("Selected Folder for download is : " + jFileChooser.getSelectedFile());
+                                                    } else {
+                                                        System.out.println("No Selection ");
+                                                    }
+
+                                                    fileTodown[0] = jFileChooser.getSelectedFile();
+
+
+                                                    File fileToDownload = new File(fileTodown[0],fileName);
                                                     try {
                                                         // Create a stream to write data to the file.
                                                         FileOutputStream fileOutputStream = new FileOutputStream(fileToDownload);
@@ -469,8 +507,14 @@ public class Client {
                                                     // Create the file with its name.
                                                     File fileToDelete = new File(fileName);
                                                     if(fileToDelete.delete()) {
+                                                        //jpFileRow.setVisible(false);
+                                                        //jlFileName.setVisible(false);
+                                                        // fileToDelete.setVisible(false);
+                                                        //fileName.setVisible(false);
+                                                        //nameTextField.setVisible(false);
+
                                                         // Label to prompt the user if they are sure they want to download the file.
-                                                        JLabel jlPrompt2 = new JLabel("Are you sure you want to download " + fileName + "?");
+                                                    /*    JLabel jlPrompt2 = new JLabel("Are you sure you want to download " + fileName + "?");
                                                         // Change the font style, size, and family of the label.
                                                         jlPrompt2.setFont(new Font("Arial", Font.BOLD, 15));
                                                         // Add spacing on the top and bottom of the label.
@@ -478,9 +522,13 @@ public class Client {
                                                         // Center the label horizontally.
                                                         jlPrompt2.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+                                                     */
+
                                                     } else {
+                                                        System.out.println("delete not done");
+
                                                         // Label to prompt the user if they are sure they want to download the file.
-                                                        JLabel jlPrompt3 = new JLabel("Are you sure you want to download " + fileName + "?");
+                                                      /*  JLabel jlPrompt3 = new JLabel("Are you sure you want to download " + fileName + "?");
                                                         // Change the font style, size, and family of the label.
                                                         jlPrompt3.setFont(new Font("Arial", Font.BOLD, 15));
                                                         // Add spacing on the top and bottom of the label.
@@ -488,8 +536,11 @@ public class Client {
                                                         // Center the label horizontally.
                                                         jlPrompt3.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+                                                       */
+
 
                                                     }
+                                                    //jpFileRow.add(jlFileName);
 
                                                 }
                                             });
@@ -577,14 +628,14 @@ public class Client {
                         jFrame.setVisible(true);
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                   e.printStackTrace();
                     System.err.println("Server seems to be Unavailable. Make sure you typed in the IP address correctly");
                     JFrame error2 = new JFrame("Error");
                     JPanel ErrorPanel2 = new JPanel();
                     ErrorPanel2.add(new Label("Server seems to be Unavailable. Make sure you typed in the IP address correctly."));
                     error2.getContentPane().add(BorderLayout.NORTH, ErrorPanel2);
                     error2.setResizable(false);
-                    error2.setSize(600, 100);
+                    error2.setSize(600, 200);
                     error2.setVisible(true);
                     error2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 }

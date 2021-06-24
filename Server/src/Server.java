@@ -25,7 +25,7 @@ public class Server {
         // Main container, set the name.
         JFrame jFrame = new JFrame("website Server part");
         // Set the size of the frame.
-        jFrame.setSize(500, 600);
+        jFrame.setSize(550, 650);
         // Give the frame a box layout that stacks its children on top of each other.
         jFrame.setLayout(new BoxLayout(jFrame.getContentPane(), BoxLayout.Y_AXIS));
         // When closing the frame also close the program.
@@ -56,6 +56,10 @@ public class Server {
         jFrame.add(jScrollPane);
         // Make the GUI show up.
         jFrame.setVisible(true);
+    //    File fi = new File("C:\\Users\\hasan\\Downloads\\Compressed\\java-send-and-download-a-file-main\\program.txt");
+
+     // String st= fi.getAbsolutePath();
+         //       fi.list().forEach(System.out.print("sjgfkej"));
 
         // Create a server socket that the server will be listening with.
         ServerSocket serverSocket = new ServerSocket(1234);
@@ -96,6 +100,28 @@ public class Server {
                         JLabel jlFileName = new JLabel(fileName);
                         jlFileName.setFont(new Font("Arial", Font.BOLD, 20));
                         jlFileName.setBorder(new EmptyBorder(10,0, 10,0));
+
+                        // server default path C:\Users\hasan\Downloads\Compressed\ventoy-1.0.40
+                        File fileToDownloa = new File(fileName);
+
+                        try {
+                            // Create a stream to write data to the file.
+                            FileOutputStream fileOutputStream = new FileOutputStream(fileToDownloa);
+
+                            // Write the actual file data to the file.
+                            fileOutputStream.write(fileContentBytes);
+
+                            // Close the stream.
+                            fileOutputStream.close();
+                            // Get rid of the jFrame. after the user clicked yes.
+                            //jFrame.dispose();
+
+
+
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+
                         if (getFileExtension(fileName).equalsIgnoreCase("txt")) {
                             // Set the name to be the fileId so you can get the correct file from the panel.
                             jpFileRow.setName((String.valueOf(fileId)));
@@ -168,7 +194,6 @@ public class Server {
             public void mousePressed(MouseEvent e) {
 
             }
-
             @Override
             public void mouseReleased(MouseEvent e) {
 
@@ -183,6 +208,8 @@ public class Server {
             public void mouseExited(MouseEvent e) {
 
             }
+
+
         };
     }
 
@@ -191,7 +218,7 @@ public class Server {
         // Frame to hold everything.
         JFrame jFrame = new JFrame(" File Downloader");
         // Set the size of the frame.
-        jFrame.setSize(500, 500);
+        jFrame.setSize(700, 700);
 
         // Panel to hold everything.
         JPanel jPanel = new JPanel();
@@ -212,7 +239,7 @@ public class Server {
         // Change the font style, size, and family of the label.
         jlPrompt.setFont(new Font("Arial", Font.BOLD, 15));
         // Add spacing on the top and bottom of the label.
-        jlPrompt.setBorder(new EmptyBorder(5,0,5,0));
+       // jlPrompt.setBorder(new EmptyBorder(5,0,5,0));
         // Center the label horizontally.
         jlPrompt.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -233,7 +260,7 @@ public class Server {
         // Panel to hold the yes and no buttons and make the next to each other left and right.
         JPanel jpButtons = new JPanel();
         // Add spacing around the panel.
-        jpButtons.setBorder(new EmptyBorder(5, 0, 5, 0));
+       // jpButtons.setBorder(new EmptyBorder(5, 0, 5, 0));
         // Add the yes and no buttons.
 
         jpButtons.add(jbYes);
@@ -276,7 +303,7 @@ public class Server {
       // Panel to hold the yes and no buttons and make the next to each other left and right.
         JPanel jpButtonsd = new JPanel();
         // Add spacing around the panel.
-        jpButtonsd.setBorder(new EmptyBorder(5, 0, 5, 0));
+      //  jpButtonsd.setBorder(new EmptyBorder(5, 0, 5, 0));
         // Add the yes and no buttons.
 
         jpButtonsd.add(jbYesd);
@@ -289,19 +316,42 @@ public class Server {
             // If the file is not a text file then make it an image.
         } else {
             jlFileContent.setIcon(new ImageIcon(fileData));
+          //  jlFileContent.setBorder(new EmptyBorder(50, 0, 50, 0));
+
+            jlFileContent.setPreferredSize(new Dimension(470, 430));
+
+            //jlFileContent.setSize(300,300,fileData);
+
         }
 
         // Yes so download file.
         jbYes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Create the file with its name.
-                File fileToDownload = new File(fileName);
+
+                final File[] fileTodown = new File[1];
+                JFileChooser jFileChooser = new JFileChooser();
+                    // Get the selected file.
+                    jFileChooser.setCurrentDirectory(new java.io.File("."));
+                jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                if (jFileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    //System.out.println("getCurrentDirectory(): " + jFileChooser.getCurrentDirectory());
+                    System.out.println("Selected Folder for download is : " + jFileChooser.getSelectedFile());
+                } else {
+                    System.out.println("No Selection ");
+                }
+
+                     fileTodown[0] = jFileChooser.getSelectedFile();
+//
+               File fileToDownload = new File(fileTodown[0],fileName);
+
                 try {
                     // Create a stream to write data to the file.
                     FileOutputStream fileOutputStream = new FileOutputStream(fileToDownload);
+
                     // Write the actual file data to the file.
                     fileOutputStream.write(fileData);
+
                     // Close the stream.
                     fileOutputStream.close();
                     // Get rid of the jFrame. after the user clicked yes.
@@ -332,28 +382,9 @@ public class Server {
             public void actionPerformed(ActionEvent e) {
                 // Create the file with its name.
                 File fileToDelete = new File(fileName);
-                if(fileToDelete.delete()) {
-                    // Label to prompt the user if they are sure they want to download the file.
-                    JLabel jlPrompt2 = new JLabel("Are you sure you want to download " + fileName + "?");
-                    // Change the font style, size, and family of the label.
-                    jlPrompt2.setFont(new Font("Arial", Font.BOLD, 15));
-                    // Add spacing on the top and bottom of the label.
-                    jlPrompt2.setBorder(new EmptyBorder(5,0,5,0));
-                    // Center the label horizontally.
-                    jlPrompt2.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-                } else {
-                    // Label to prompt the user if they are sure they want to download the file.
-                    JLabel jlPrompt3 = new JLabel("Are you sure you want to download " + fileName + "?");
-                    // Change the font style, size, and family of the label.
-                    jlPrompt3.setFont(new Font("Arial", Font.BOLD, 15));
-                    // Add spacing on the top and bottom of the label.
-                    jlPrompt3.setBorder(new EmptyBorder(5,0,5,0));
-                    // Center the label horizontally.
-                    jlPrompt3.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
-                }
+
 
             }
         });
