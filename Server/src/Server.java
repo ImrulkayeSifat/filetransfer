@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,6 +61,59 @@ public class Server {
 
      // String st= fi.getAbsolutePath();
          //       fi.list().forEach(System.out.print("sjgfkej"));
+
+/////   load from current/default directory
+     //   String path=;
+               File folder=new File(System.getProperty("user.dir"));
+        File[] filetoread = folder.listFiles();
+
+        for(File file:filetoread){
+            if(file.isFile()){
+                System.out.println("files-> "+file.getName());
+               String fileName=file.getName();
+                byte[] fileContentBytes = new byte[(int) fileName.length()];
+                JPanel jpFileRow = new JPanel();
+                jpFileRow.setLayout(new BoxLayout(jpFileRow, BoxLayout.X_AXIS));
+                // Set the file name.
+                JLabel jlFileName = new JLabel(fileName);
+                jlFileName.setFont(new Font("Arial", Font.BOLD, 20));
+                jlFileName.setBorder(new EmptyBorder(10,0, 10,0));
+
+                if (getFileExtension(fileName).equalsIgnoreCase("txt")) {
+                    // Set the name to be the fileId so you can get the correct file from the panel.
+                    jpFileRow.setName((String.valueOf(fileId)));
+                    jpFileRow.addMouseListener(getMyMouseListener());
+                    // Add everything.
+                    jpFileRow.add(jlFileName);
+                    jPanel.add(jpFileRow);
+                    jFrame.validate();
+                } else {
+                    // Set the name to be the fileId so you can get the correct file from the panel.
+                    jpFileRow.setName((String.valueOf(fileId)));
+                    // Add a mouse listener so when it is clicked the popup appears.
+                    jpFileRow.addMouseListener(getMyMouseListener());
+                    // Add the file name and pic type to the panel and then add panel to parent panel.
+                    jpFileRow.add(jlFileName);
+                    jPanel.add(jpFileRow);
+                    // Perform a relayout.
+                    jFrame.validate();
+                }
+
+
+                // Add the new file to the array list which holds all our data.
+                myFiles.add(new MyFile(fileId,fileName,fileContentBytes,getFileExtension(fileName)));
+                // Increment the fileId for the next file to be received.
+                fileId++;
+            }
+            else if(file.isDirectory()){
+                //System.out.println("folder-> "+file.getName());
+
+            }
+        }
+
+
+
+
 
         // Create a server socket that the server will be listening with.
         ServerSocket serverSocket = new ServerSocket(1234);
