@@ -14,14 +14,14 @@ import java.util.ArrayList;
 
 public class Server {
 
-
+   static int fileId = 0;
     // Array list to hold information about the files received.
     static ArrayList<MyFile> myFiles = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
 
         // Used to track the file (jpanel that has the file name in it on a label).
-        int fileId = 0;
+
 
         // Main container, set the name.
         JFrame jFrame = new JFrame("website Server part");
@@ -120,10 +120,13 @@ public class Server {
 
         // This while loop will run forever so the server will never stop unless the application is closed.
         while (true) {
+            Socket socket = serverSocket.accept();
+            Thread t = new Thread(){
+                public void run(){
 
             try {
                 // Wait for a client to connect and when they do create a socket to communicate with them.
-                Socket socket = serverSocket.accept();
+             //   Socket socket = serverSocket.accept();
 
                 // Stream to receive data from the client through the socket.
                 DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
@@ -206,6 +209,9 @@ public class Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+                }
+            };
+    t.start();
         }
     }
 
