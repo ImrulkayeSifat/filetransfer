@@ -9,31 +9,18 @@ package client;
  *
  * @author hasan
  */
+
 public class MyFile {
-      private int id;
+
+    private int id;
     private String name;
     private byte[] data;
-    private Object fileExtension;
+    private String  fileExtension;
 
-
-    public MyFile(int fileId, String fileName, byte[] fileNameBytes, Object fileExtension) {
-        this.id=fileId;
-        this.name=fileName;
-        this.data=fileNameBytes;
-        this.fileExtension=fileExtension;
-    }
-
-    public void setId(int id) {
+    public MyFile(int id, String name, byte[] data, String fileExtension) {
         this.id = id;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public void setData(byte[] data) { this.data = data;    }
-
-    public void setFileExtension(String fileExtension) {
+        this.data = data;
         this.fileExtension = fileExtension;
     }
 
@@ -41,15 +28,33 @@ public class MyFile {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public byte[] getData() {
         return data;
     }
 
-    public Object getFileExtension() {
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public String getFileExtension() {
         return fileExtension;
     }
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
+
 }
