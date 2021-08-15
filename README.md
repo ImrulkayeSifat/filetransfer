@@ -1,7 +1,8 @@
 # File Transfer
 ## JavaFX TCP Client-Server
 
-JavaFX TCP File Sender is simple TCP client-server application, which was written in Java, with using [docs oracle] https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html library.   
+JavaFX TCP File Sender is simple TCP client-server application, which was written in Java, with using
+https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html library.   
 
 ## overview
 
@@ -66,8 +67,6 @@ Please make sure to update tests as appropriate.
 
 ## License
 
-This property have MIT license
-
-so feel free to edit & share
+Feel free to edit & share(open source).
 
 
