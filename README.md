@@ -2,7 +2,7 @@
 ## JavaFX TCP Client-Server
 
 JavaFX TCP File Sender is simple TCP client-server application, which was written in Java, with using
-https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html library.   
+https://docs.oracle.com/javase/tutorial/uiswing/components/filechooser.html .   
 
 ## overview
 
@@ -27,7 +27,8 @@ https://drive.google.com/file/d/1t4mNFSeiNHW6RAJA4lbKL0Q7oZ6gh7Ul/view?usp=shari
 * Multiple client can upload files to TCP server.
 * Multiple client can  Downloading files to local machine from server.
 * Deleting files from server(only administrator).
-* now we wiil see 
+* Client's can see text and image preview when he want to download the file.
+* Now we wiil see 
 
 error messege
 
